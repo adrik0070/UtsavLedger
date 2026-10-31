@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kali Pujo 2026 Accounts Tracker</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              500: '#f97316',
+              600: '#ea580c',
+              700: '#c2410c',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.05);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0,0,0,0.2);
+      border-radius: 3px;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col text-slate-800 dark:bg-slate-900 dark:text-slate-100 antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- Header Banner -->
+  <header class="bg-gradient-to-r from-orange-600 via-amber-600 to-brand-600 text-white shadow-md sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="p-2.5 bg-white/10 rounded-xl backdrop-blur-sm border border-white/20">
+          <i class="fa-solid fa-drum text-2xl text-amber-200"></i>
+        </div>
+        <div>
+          <h1 id="appHeaderTitle" class="text-xl font-bold tracking-tight">Kali Pujo 2026 Accounts Tracker</h1>
+          <p class="text-xs text-orange-100 opacity-90">Apartment Event Finance & Budget Manager</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <button id="exportCsvBtn" title="Export CSV" class="p-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-semibold flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-file-csv text-base"></i>
+          <span class="hidden sm:inline">Export CSV</span>
+        </button>
+        <button id="resetDataBtn" title="Reset to Default 15 Contributors & Clear Expenses" class="p-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-semibold flex items-center gap-1.5 transition text-red-100 hover:text-white">
+          <i class="fa-solid fa-rotate-left"></i>
+          <span class="hidden md:inline">Reset Defaults</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    <!-- KPI Summary Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4" id="kpiContainer">
+      <!-- Total Collected -->
+      <div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+          <span class="text-xs font-medium uppercase tracking-wider">Total Collected</span>
+          <i class="fa-solid fa-hand-holding-dollar text-emerald-500 text-lg"></i>
+        </div>
+        <div>
+          <div id="kpiCollected" class="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">₹0</div>
+          <span id="kpiCollectedSub" class="text-[11px] text-slate-400">0 of 15 paid</span>
+        </div>
+      </div>
+
+      <!-- Pending Collections -->
+      <div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+          <span class="text-xs font-medium uppercase tracking-wider">Pending Dues</span>
+          <i class="fa-solid fa-clock-rotate-left text-amber-500 text-lg"></i>
+        </div>
+        <div>
+          <div id="kpiPending" class="text-xl sm:text-2xl font-bold text-amber-600 dark:text-amber-400">₹0</div>
+          <span id="kpiPendingSub" class="text-[11px] text-slate-400">15 pending</span>
+        </div>
+      </div>
+
+      <!-- Total Spent -->
+      <div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+          <span class="text-xs font-medium uppercase tracking-wider">Total Spent</span>
+          <i class="fa-solid fa-receipt text-rose-500 text-lg"></i>
+        </div>
+        <div>
+          <div id="kpiSpent" class="text-xl sm:text-2xl font-bold text-rose-600 dark:text-rose-400">₹0</div>
+          <span id="kpiSpentSub" class="text-[11px] text-slate-400">0 items</span>
+        </div>
+      </div>
+
+      <!-- Net Fund Balance -->
+      <div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+          <span class="text-xs font-medium uppercase tracking-wider">Cash in Hand</span>
+          <i class="fa-solid fa-wallet text-sky-500 text-lg"></i>
+        </div>
+        <div>
+          <div id="kpiNet" class="text-xl sm:text-2xl font-bold text-sky-600 dark:text-sky-400">₹0</div>
+          <span class="text-[11px] text-slate-400">Collected - Spent</span>
+        </div>
+      </div>
+
+      <!-- Owed Reimbursements -->
+      <div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+          <span class="text-xs font-medium uppercase tracking-wider">Owed Dues</span>
+          <i class="fa-solid fa-user-gear text-purple-500 text-lg"></i>
+        </div>
+        <div>
+          <div id="kpiOwed" class="text-xl sm:text-2xl font-bold text-purple-600 dark:text-purple-400">₹0</div>
+          <span id="kpiOwedSub" class="text-[11px] text-slate-400">Own-pocket unpaid</span>
+        </div>
+      </div>
+
+      <!-- Net Available Fund -->
+      <div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+          <span class="text-xs font-medium uppercase tracking-wider">Real Surplus</span>
+          <i class="fa-solid fa-scale-balanced text-teal-500 text-lg"></i>
+        </div>
+        <div>
+          <div id="kpiRealCash" class="text-xl sm:text-2xl font-bold text-teal-600 dark:text-teal-400">₹0</div>
+          <span class="text-[11px] text-slate-400">Net - Owed Dues</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dynamic Budget Safety Check Banner -->
+    <div id="budgetCheckBanner" class="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-5 shadow-sm border-l-4 border-amber-500 border-t border-r border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div class="flex items-start space-x-3">
+        <div class="p-2 bg-amber-100 dark:bg-amber-900/30 text-amber-600 rounded-lg shrink-0">
+          <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+        </div>
+        <div>
+          <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100" id="budgetBannerTitle">Budget Check: Balance Outlook</h4>
+          <p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5" id="budgetBannerMessage">
+            Total target budget for 12 categories is ₹42,700. Based on 15 members @ ₹1,800 default, expected collection is ₹27,000.
+          </p>
+        </div>
+      </div>
+      <div class="shrink-0 bg-slate-50 dark:bg-slate-900 px-3.5 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-right w-full sm:w-auto">
+        <div class="text-[11px] text-slate-400 uppercase font-semibold tracking-wider">Breakeven Per Flat</div>
+        <div id="breakevenPerFlat" class="text-base font-extrabold text-brand-600 dark:text-brand-400">₹2,847</div>
+      </div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="border-b border-slate-200 dark:border-slate-700 flex space-x-2 sm:space-x-6 overflow-x-auto no-scrollbar">
+      <button class="tab-btn px-4 py-2.5 font-medium text-sm border-b-2 border-brand-500 text-brand-600 dark:text-brand-500 flex items-center gap-2 whitespace-nowrap" data-tab="tab-dashboard">
+        <i class="fa-solid fa-chart-pie"></i>
+        <span>Dashboard & Budget</span>
+      </button>
+      <button class="tab-btn px-4 py-2.5 font-medium text-sm border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center gap-2 whitespace-nowrap" data-tab="tab-contributions">
+        <i class="fa-solid fa-users"></i>
+        <span>Contributors (15 Members)</span>
+      </button>
+      <button class="tab-btn px-4 py-2.5 font-medium text-sm border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center gap-2 whitespace-nowrap" data-tab="tab-expenses">
+        <i class="fa-solid fa-money-bill-transfer"></i>
+        <span>Expenses Tracker</span>
+      </button>
+      <button class="tab-btn px-4 py-2.5 font-medium text-sm border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center gap-2 whitespace-nowrap" data-tab="tab-settings">
+        <i class="fa-solid fa-sliders"></i>
+        <span>Settings & Category Budgets</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: DASHBOARD & BUDGET OVERVIEW -->
+    <section id="tab-dashboard" class="tab-content space-y-6">
+      
+      <!-- Chart and Overview Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Budget vs Actual Bar Chart -->
+        <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm sm:text-base">Category Budget vs. Actual Spend</h3>
+            <span class="text-xs text-slate-400">12 Planned Event Categories</span>
+          </div>
+          <div class="flex-1 relative min-h-[300px]">
+            <canvas id="categoryChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Collection Doughnut Chart -->
+        <div class="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+          <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm sm:text-base mb-2">Collection Status</h3>
+          <div class="flex-1 relative min-h-[220px] flex items-center justify-center">
+            <canvas id="collectionsChart"></canvas>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400 space-y-1">
+            <div class="flex justify-between">
+              <span>Target Collection (15 × ₹1,800):</span>
+              <strong id="dashTargetCollectionVal" class="text-slate-800 dark:text-slate-200">₹27,000</strong>
+            </div>
+            <div class="flex justify-between">
+              <span>Current Raised:</span>
+              <strong id="dashRaisedVal" class="text-emerald-600 dark:text-emerald-400">₹0</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Categories Cards Grid -->
+      <div>
+        <h3 class="font-bold text-slate-800 dark:text-slate-100 text-base mb-3">Event Categories & Spend Progress</h3>
+        <div id="categoryCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Dynamically Rendered -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: CONTRIBUTIONS TRACKER -->
+    <section id="tab-contributions" class="tab-content hidden space-y-4">
+      <!-- Toolbar -->
+      <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3">
+        <div class="flex flex-wrap items-center gap-2 flex-1">
+          <!-- Filter Buttons -->
+          <div class="inline-flex rounded-lg p-1 bg-slate-100 dark:bg-slate-700/50 text-xs font-medium">
+            <button class="contrib-filter-btn px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 shadow-xs text-slate-800 dark:text-white" data-filter="ALL">All (15)</button>
+            <button class="contrib-filter-btn px-3 py-1.5 rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-800" data-filter="PAID">Paid</button>
+            <button class="contrib-filter-btn px-3 py-1.5 rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-800" data-filter="PARTIAL">Partial</button>
+            <button class="contrib-filter-btn px-3 py-1.5 rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-800" data-filter="PENDING">Pending</button>
+          </div>
+          <div class="relative flex-1 min-w-[180px]">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+            <input type="text" id="contribSearchInput" placeholder="Search contributor name..." class="w-full pl-8 pr-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs focus:ring-1 focus:ring-brand-500 outline-none">
+          </div>
+        </div>
+        <button id="openAddContribModalBtn" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition">
+          <i class="fa-solid fa-user-plus"></i>
+          <span>Add Contributor</span>
+        </button>
+      </div>
+
+      <!-- Contributions Table -->
+      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 uppercase font-medium text-[11px] tracking-wider border-b border-slate-200 dark:border-slate-700">
+              <tr>
+                <th class="py-3 px-4">#</th>
+                <th class="py-3 px-4">Contributor Name</th>
+                <th class="py-3 px-4">Status</th>
+                <th class="py-3 px-4 text-right">Amount Paid</th>
+                <th class="py-3 px-4 text-right">Pending Due</th>
+                <th class="py-3 px-4">Payment Info</th>
+                <th class="py-3 px-4 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody id="contributionsTableBody" class="divide-y divide-slate-100 dark:divide-slate-700/50">
+              <!-- Dynamically Rendered -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: EXPENSES TRACKER -->
+    <section id="tab-expenses" class="tab-content hidden space-y-4">
+      <!-- Toolbar -->
+      <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3">
+        <div class="flex flex-wrap items-center gap-2 flex-1">
+          <select id="expenseCategoryFilter" class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs py-1.5 px-3 focus:ring-1 focus:ring-brand-500 outline-none">
+            <option value="ALL">All Categories</option>
+          </select>
+          <select id="expenseReimburseFilter" class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs py-1.5 px-3 focus:ring-1 focus:ring-brand-500 outline-none">
+            <option value="ALL">All Payment Types</option>
+            <option value="FUND">Paid from Fund</option>
+            <option value="UNREIMBURSED">Unreimbursed (Owed)</option>
+            <option value="REIMBURSED">Reimbursed</option>
+          </select>
+          <div class="relative flex-1 min-w-[160px]">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+            <input type="text" id="expenseSearchInput" placeholder="Search expense item..." class="w-full pl-8 pr-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs focus:ring-1 focus:ring-brand-500 outline-none">
+          </div>
+        </div>
+        <button id="openAddExpenseModalBtn" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition">
+          <i class="fa-solid fa-plus"></i>
+          <span>Record Expense</span>
+        </button>
+      </div>
+
+      <!-- Expenses Table -->
+      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 uppercase font-medium text-[11px] tracking-wider border-b border-slate-200 dark:border-slate-700">
+              <tr>
+                <th class="py-3 px-4">Date</th>
+                <th class="py-3 px-4">Item & Description</th>
+                <th class="py-3 px-4">Category</th>
+                <th class="py-3 px-4 text-right">Amount</th>
+                <th class="py-3 px-4">Paid By</th>
+                <th class="py-3 px-4">Paid From</th>
+                <th class="py-3 px-4 text-center">Reimbursement</th>
+                <th class="py-3 px-4 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody id="expensesTableBody" class="divide-y divide-slate-100 dark:divide-slate-700/50">
+              <!-- Dynamically Rendered -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: SETTINGS & CATEGORY BUDGETS -->
+    <section id="tab-settings" class="tab-content hidden space-y-6">
+      <div class="max-w-3xl bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-6">
+        <h2 class="text-base font-bold text-slate-800 dark:text-slate-100 border-b border-slate-200 dark:border-slate-700 pb-3">
+          Event & Financial Settings
+        </h2>
+        
+        <form id="settingsForm" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Function Name</label>
+              <input type="text" id="settingFunctionName" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-1 focus:ring-brand-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Year</label>
+              <input type="number" id="settingYear" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-1 focus:ring-brand-500 outline-none">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Target Contribution per Head/Flat (₹)</label>
+              <input type="number" id="settingTargetContrib" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-1 focus:ring-brand-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Budget Safety Buffer (%)</label>
+              <input type="number" id="settingBuffer" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-1 focus:ring-brand-500 outline-none">
+            </div>
+          </div>
+
+          <div>
+            <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs px-5 py-2.5 rounded-lg transition shadow-xs">
+              Save Settings
+            </button>
+          </div>
+        </form>
+
+        <!-- Category Budget Editor -->
+        <div class="pt-6 border-t border-slate-200 dark:border-slate-700 space-y-4">
+          <div class="flex justify-between items-center">
+            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">12 Planned Event Categories & Target Allocations</h3>
+            <span class="text-xs text-slate-400">Edit amounts directly</span>
+          </div>
+          <div id="categorySettingsList" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Dynamically Rendered -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: LOG / EDIT PAYMENT -->
+  <div id="contribModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 max-w-md w-full overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-700/30">
+        <h3 id="contribModalTitle" class="font-bold text-slate-800 dark:text-slate-100 text-sm sm:text-base">Record Payment</h3>
+        <button class="close-modal-btn text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <form id="contribForm" class="p-5 space-y-4">
+        <input type="hidden" id="contribId">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Contributor Name</label>
+          <input type="text" id="contribName" required placeholder="e.g. Anirban" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-brand-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Amount Paid (₹)</label>
+          <input type="number" id="contribAmount" required min="0" placeholder="1800" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-brand-500 outline-none">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Payment Date</label>
+            <input type="date" id="contribDate" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-xs focus:ring-1 focus:ring-brand-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Payment Mode</label>
+            <select id="contribMode" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-xs focus:ring-1 focus:ring-brand-500 outline-none">
+              <option value="UPI">UPI / GPay / PhonePe</option>
+              <option value="Cash">Cash</option>
+              <option value="NetBanking">NetBanking / Transfer</option>
+              <option value="Cheque">Cheque</option>
+            </select>
+          </div>
+        </div>
+        <div class="pt-3 flex justify-end gap-2">
+          <button type="button" class="close-modal-btn px-4 py-2 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">Cancel</button>
+          <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition">Save Payment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: LOG / EDIT EXPENSE -->
+  <div id="expenseModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 max-w-md w-full overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-700/30">
+        <h3 id="expenseModalTitle" class="font-bold text-slate-800 dark:text-slate-100 text-sm sm:text-base">Record Expense Item</h3>
+        <button class="close-modal-btn text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <form id="expenseForm" class="p-5 space-y-4">
+        <input type="hidden" id="expenseId">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Item & Description</label>
+          <input type="text" id="expenseItem" required placeholder="e.g. Main Pandal Decoration Advance" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-xs focus:ring-1 focus:ring-brand-500 outline-none">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Category</label>
+            <select id="expenseCategory" required class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-xs focus:ring-1 focus:ring-brand-500 outline-none">
+              <!-- Dynamically Populated -->
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Amount (₹)</label>
+            <input type="number" id="expenseAmount" required min="1" placeholder="0" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-xs focus:ring-1 focus:ring-brand-500 outline-none">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Expense Date</label>
+            <input type="date" id="expenseDate" required class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-xs focus:ring-1 focus:ring-brand-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Handled / Paid By</label>
+            <input type="text" id="expensePaidBy" required placeholder="e.g. Anirban" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-xs focus:ring-1 focus:ring-brand-500 outline-none">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3 pt-1">
+          <div>
+            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Paid From Source</label>
+            <select id="expensePaidFrom" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-xs focus:ring-1 focus:ring-brand-500 outline-none">
+              <option value="Fund">Fund (Direct)</option>
+              <option value="Own pocket">Own Pocket (Needs Reimbursement)</option>
+            </select>
+          </div>
+          <div id="reimburseStatusContainer" class="hidden">
+            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Reimbursement Status</label>
+            <select id="expenseReimbursed" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-xs focus:ring-1 focus:ring-brand-500 outline-none">
+              <option value="No">No (Pending Return)</option>
+              <option value="Yes">Yes (Settled)</option>
+            </select>
+          </div>
+        </div>
+        <div class="pt-3 flex justify-end gap-2">
+          <button type="button" class="close-modal-btn px-4 py-2 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">Cancel</button>
+          <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition">Save Expense</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- APPLICATION JAVASCRIPT LOGIC -->
+  <script>
+    // 1. PRE-LOADED SETTINGS
+    const INITIAL_SETTINGS = {
+      functionName: "Kali Pujo",
+      year: 2026,
+      targetContribution: 1800,
+      bufferPercent: 10
+    };
+
+    // 2. PRE-LOADED CATEGORIES & BUDGETS (Based on last year's report + buffer)
+    const INITIAL_CATEGORIES = [
+      { id: "cat-1", name: "Pandal & Decoration", budget: 11650, icon: "fa-campground" },
+      { id: "cat-2", name: "Groceries, Fruits & Bhog", budget: 7250, icon: "fa-bowl-rice" },
+      { id: "cat-3", name: "Electrical & Lighting", budget: 6200, icon: "fa-lightbulb" },
+      { id: "cat-4", name: "Puja Items & Flowers", budget: 2150, icon: "fa-spa" },
+      { id: "cat-5", name: "Rituals (Dosokorma)", budget: 1800, icon: "fa-hands-praying" },
+      { id: "cat-6", name: "Miscellaneous", budget: 2100, icon: "fa-asterisk" },
+      { id: "cat-7", name: "Clothing", budget: 1150, icon: "fa-shirt" },
+      { id: "cat-8", name: "Cleaning & Utensils", budget: 900, icon: "fa-broom" },
+      { id: "cat-9", name: "Bisorjon (Immersion)", budget: 500, icon: "fa-water" },
+      { id: "cat-10", name: "Dhak (Drummers)", budget: 1000, icon: "fa-drum" },
+      { id: "cat-11", name: "Idol (Thakur)", budget: 5000, icon: "fa-om" },
+      { id: "cat-12", name: "Priest (Thakurmasai)", budget: 3000, icon: "fa-user-nurse" }
+    ];
+
+    // 3. PRE-LOADED 15 CONTRIBUTORS FROM LAST YEAR'S REPORT (All 0 paid)
+    const INITIAL_CONTRIBUTIONS = [
+      { id: "c-1", name: "Anirban", amountPaid: 0, date: "", mode: "UPI" },
+      { id: "c-2", name: "Sanjay Das", amountPaid: 0, date: "", mode: "UPI" },
+      { id: "c-3", name: "Avik Chowdhury", amountPaid: 0, date: "", mode: "UPI" },
+      { id: "c-4", name: "Subhasish Kaku", amountPaid: 0, date: "", mode: "Cash" },
+      { id: "c-5", name: "Reshmi Di", amountPaid: 0, date: "", mode: "UPI" },
+      { id: "c-6", name: "Kumar Da", amountPaid: 0, date: "", mode: "Cash" },
+      { id: "c-7", name: "Piyush Kaku", amountPaid: 0, date: "", mode: "Cash" },
+      { id: "c-8", name: "Samiran Da", amountPaid: 0, date: "", mode: "UPI" },
+      { id: "c-9", name: "Soumen Da", amountPaid: 0, date: "", mode: "UPI" },
+      { id: "c-10", name: "Ratan Da", amountPaid: 0, date: "", mode: "Cash" },
+      { id: "c-11", name: "Sanjib Saha", amountPaid: 0, date: "", mode: "UPI" },
+      { id: "c-12", name: "Sunirmal Guriya", amountPaid: 0, date: "", mode: "UPI" },
+      { id: "c-13", name: "Rahul (Ground floor)", amountPaid: 0, date: "", mode: "UPI" },
+      { id: "c-14", name: "Rahul Dey", amountPaid: 0, date: "", mode: "UPI" },
+      { id: "c-15", name: "Avik Ganguly", amountPaid: 0, date: "", mode: "UPI" }
+    ];
+
+    // 4. CLEARED EXPENSES BY DEFAULT
+    const INITIAL_EXPENSES = [];
+
+    // STATE VARIABLES
+    let settings = JSON.parse(localStorage.getItem('ft26_settings')) || INITIAL_SETTINGS;
+    let categories = JSON.parse(localStorage.getItem('ft26_categories')) || INITIAL_CATEGORIES;
+    let contributions = JSON.parse(localStorage.getItem('ft26_contributions')) || INITIAL_CONTRIBUTIONS;
+    let expenses = JSON.parse(localStorage.getItem('ft26_expenses')) || INITIAL_EXPENSES;
+
+    let activeContribFilter = 'ALL';
+    let categoryChartInstance = null;
+    let collectionsChartInstance = null;
+
+    // SAVE STATE
+    function saveData() {
+      localStorage.setItem('ft26_settings', JSON.stringify(settings));
+      localStorage.setItem('ft26_categories', JSON.stringify(categories));
+      localStorage.setItem('ft26_contributions', JSON.stringify(contributions));
+      localStorage.setItem('ft26_expenses', JSON.stringify(expenses));
+      renderApp();
+    }
+
+    // HELPER: FORMAT CURRENCY
+    function formatINR(val) {
+      return '₹' + Number(val || 0).toLocaleString('en-IN');
+    }
+
+    // MAIN RENDER APP
+    function renderApp() {
+      document.getElementById('appHeaderTitle').textContent = `${settings.functionName} ${settings.year} Accounts Tracker`;
+      
+      // Calculate Metrics
+      const totalCollected = contributions.reduce((acc, c) => acc + Number(c.amountPaid || 0), 0);
+      const targetPerFlat = Number(settings.targetContribution || 1800);
+      const totalExpected = contributions.length * targetPerFlat;
+      const totalPending = Math.max(0, totalExpected - totalCollected);
+
+      const paidFlatsCount = contributions.filter(c => Number(c.amountPaid) >= targetPerFlat).length;
+      const pendingFlatsCount = contributions.filter(c => Number(c.amountPaid) < targetPerFlat).length;
+
+      const totalSpent = expenses.reduce((acc, e) => acc + Number(e.amount || 0), 0);
+      const netBalance = totalCollected - totalSpent;
+
+      // Owed Member Reimbursements
+      const totalOwed = expenses
+        .filter(e => e.paidFrom === 'Own pocket' && e.reimbursed === 'No')
+        .reduce((acc, e) => acc + Number(e.amount || 0), 0);
+
+      const realCash = netBalance - totalOwed;
+
+      // Update Top KPI Cards
+      document.getElementById('kpiCollected').textContent = formatINR(totalCollected);
+      document.getElementById('kpiCollectedSub').textContent = `${paidFlatsCount} of ${contributions.length} paid`;
+
+      document.getElementById('kpiPending').textContent = formatINR(totalPending);
+      document.getElementById('kpiPendingSub').textContent = `${pendingFlatsCount} pending`;
+
+      document.getElementById('kpiSpent').textContent = formatINR(totalSpent);
+      document.getElementById('kpiSpentSub').textContent = `${expenses.length} recorded items`;
+
+      document.getElementById('kpiNet').textContent = formatINR(netBalance);
+      document.getElementById('kpiOwed').textContent = formatINR(totalOwed);
+      document.getElementById('kpiOwedSub').textContent = totalOwed > 0 ? `Unsettled reimbursements` : 'All settled';
+
+      document.getElementById('kpiRealCash').textContent = formatINR(realCash);
+
+      // Budget Safety Check Calculation
+      const totalBudget = categories.reduce((acc, cat) => acc + Number(cat.budget || 0), 0);
+      const reqPerHead = contributions.length > 0 ? Math.ceil(totalBudget / contributions.length) : 0;
+
+      document.getElementById('breakevenPerFlat').textContent = formatINR(reqPerHead);
+      document.getElementById('dashTargetCollectionVal').textContent = formatINR(totalExpected);
+      document.getElementById('dashRaisedVal').textContent = formatINR(totalCollected);
+
+      const bannerEl = document.getElementById('budgetCheckBanner');
+      const bannerTitle = document.getElementById('budgetBannerTitle');
+      const bannerMsg = document.getElementById('budgetBannerMessage');
+
+      if (totalBudget > totalExpected) {
+        bannerEl.className = "bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-5 shadow-sm border-l-4 border-amber-500 border-t border-r border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4";
+        bannerTitle.textContent = "Budget Check: Budget Exceeds Expected Contributions";
+        bannerMsg.textContent = `Total target budget for ${categories.length} categories is ${formatINR(totalBudget)}. Based on ${contributions.length} members at ₹${targetPerFlat} default, expected total collection is ${formatINR(totalExpected)}. To cover the full budget, target contribution needs to be ${formatINR(reqPerHead)} per member.`;
+      } else {
+        bannerEl.className = "bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-5 shadow-sm border-l-4 border-emerald-500 border-t border-r border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4";
+        bannerTitle.textContent = "Budget Check: Healthy Budget Allocation";
+        bannerMsg.textContent = `Total expected collections (${formatINR(totalExpected)}) fully cover the planned event budget (${formatINR(totalBudget)}).`;
+      }
+
+      // Render Active Tab Content
+      renderCategoryDashboard();
+      renderContributionsTable();
+      renderExpensesTable();
+      renderCategoryDropdowns();
+      renderSettingsPage();
+      updateCharts();
+    }
+
+    // 1. CATEGORIES PROGRESS DASHBOARD
+    function renderCategoryDashboard() {
+      const container = document.getElementById('categoryCardsGrid');
+      container.innerHTML = '';
+
+      categories.forEach(cat => {
+        const spent = expenses
+          .filter(e => e.category === cat.name)
+          .reduce((acc, e) => acc + Number(e.amount || 0), 0);
+        
+        const remaining = cat.budget - spent;
+        const pct = cat.budget > 0 ? Math.round((spent / cat.budget) * 100) : 0;
+        const isOver = spent > cat.budget;
+
+        const card = document.createElement('div');
+        card.className = 'bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-3';
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2.5">
+              <div class="p-2.5 rounded-lg bg-orange-50 dark:bg-slate-700 text-brand-600 dark:text-brand-400">
+                <i class="fa-solid ${cat.icon || 'fa-tag'} text-base"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100">${cat.name}</h4>
+                <span class="text-[11px] text-slate-400">Allocated: ${formatINR(cat.budget)}</span>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold ${isOver ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">
+              ${pct}%
+            </span>
+          </div>
+
+          <div class="space-y-1">
+            <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+              <div class="${isOver ? 'bg-red-500' : 'bg-brand-500'} h-full rounded-full transition-all duration-300" style="width: ${Math.min(pct, 100)}%"></div>
+            </div>
+            <div class="flex justify-between items-center text-[11px] text-slate-500 dark:text-slate-400">
+              <span>Spent: <strong class="${isOver ? 'text-red-600' : 'text-slate-700 dark:text-slate-200'}">${formatINR(spent)}</strong></span>
+              <span>${isOver ? 'Over budget by ' + formatINR(Math.abs(remaining)) : 'Left: ' + formatINR(remaining)}</span>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // 2. CONTRIBUTIONS TRACKER TABLE
+    function renderContributionsTable() {
+      const tbody = document.getElementById('contributionsTableBody');
+      const target = Number(settings.targetContribution || 1800);
+      const searchTerm = document.getElementById('contribSearchInput').value.toLowerCase();
+
+      let filtered = contributions.filter(c => {
+        const matchesSearch = c.name.toLowerCase().includes(searchTerm);
+        if (!matchesSearch) return false;
+
+        const paid = Number(c.amountPaid || 0);
+        if (activeContribFilter === 'PAID') return paid >= target;
+        if (activeContribFilter === 'PARTIAL') return paid > 0 && paid < target;
+        if (activeContribFilter === 'PENDING') return paid === 0;
+        return true;
+      });
+
+      tbody.innerHTML = '';
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-slate-400 text-xs">No matching contributor found.</td></tr>`;
+        return;
+      }
+
+      filtered.forEach((c, index) => {
+        const paid = Number(c.amountPaid || 0);
+        const pending = Math.max(0, target - paid);
+        
+        let statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">Paid</span>`;
+        if (paid === 0) {
+          statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300">Not Paid</span>`;
+        } else if (paid < target) {
+          statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">Partial</span>`;
+        }
+
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50/80 dark:hover:bg-slate-700/30 transition-colors";
+        tr.innerHTML = `
+          <td class="py-3 px-4 text-xs font-semibold text-slate-400">${index + 1}</td>
+          <td class="py-3 px-4 text-slate-800 dark:text-slate-100 font-bold">${c.name}</td>
+          <td class="py-3 px-4">${statusBadge}</td>
+          <td class="py-3 px-4 text-right font-semibold text-slate-800 dark:text-slate-100">${formatINR(paid)}</td>
+          <td class="py-3 px-4 text-right text-slate-500 dark:text-slate-400 font-medium">${pending > 0 ? formatINR(pending) : '-'}</td>
+          <td class="py-3 px-4 text-slate-500 text-xs">
+            ${paid > 0 ? `${c.mode} • ${c.date || 'N/A'}` : '<span class="text-slate-400 italic">Pending payment</span>'}
+          </td>
+          <td class="py-3 px-4 text-center">
+            <div class="flex items-center justify-center space-x-1">
+              <button onclick="editContrib('${c.id}')" title="Record Payment" class="px-2.5 py-1 bg-brand-50 hover:bg-brand-100 dark:bg-slate-700 text-brand-600 dark:text-brand-400 rounded text-xs font-semibold flex items-center gap-1">
+                <i class="fa-solid fa-pen-to-square"></i>
+                <span>Update</span>
+              </button>
+              <button onclick="deleteContrib('${c.id}')" title="Delete" class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 rounded text-red-500">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // 3. EXPENSES TRACKER TABLE
+    function renderExpensesTable() {
+      const tbody = document.getElementById('expensesTableBody');
+      const catFilter = document.getElementById('expenseCategoryFilter').value;
+      const reimburseFilter = document.getElementById('expenseReimburseFilter').value;
+      const searchTerm = document.getElementById('expenseSearchInput').value.toLowerCase();
+
+      let filtered = expenses.filter(e => {
+        const matchesSearch = e.item.toLowerCase().includes(searchTerm) || e.paidBy.toLowerCase().includes(searchTerm);
+        if (!matchesSearch) return false;
+
+        if (catFilter !== 'ALL' && e.category !== catFilter) return false;
+        
+        if (reimburseFilter === 'FUND' && e.paidFrom !== 'Fund') return false;
+        if (reimburseFilter === 'UNREIMBURSED' && (e.paidFrom !== 'Own pocket' || e.reimbursed !== 'No')) return false;
+        if (reimburseFilter === 'REIMBURSED' && (e.paidFrom !== 'Own pocket' || e.reimbursed !== 'Yes')) return false;
+
+        return true;
+      });
+
+      tbody.innerHTML = '';
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400 text-xs">No expense entries recorded yet. Click "Record Expense" to add your first bill.</td></tr>`;
+        return;
+      }
+
+      filtered.forEach(e => {
+        let statusCol = `<span class="text-slate-400 text-xs">N/A (Fund)</span>`;
+        if (e.paidFrom === 'Own pocket') {
+          if (e.reimbursed === 'Yes') {
+            statusCol = `<span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">Reimbursed</span>`;
+          } else {
+            statusCol = `
+              <button onclick="toggleReimbursement('${e.id}')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-500 hover:bg-amber-600 text-white transition shadow-xs flex items-center justify-center gap-1 mx-auto">
+                <i class="fa-solid fa-hand-holding-hand"></i>
+                <span>Mark Reimbursed</span>
+              </button>
+            `;
+          }
+        }
+
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50/80 dark:hover:bg-slate-700/30 transition-colors";
+        tr.innerHTML = `
+          <td class="py-3 px-4 text-xs text-slate-500 whitespace-nowrap">${e.date}</td>
+          <td class="py-3 px-4 font-semibold text-slate-800 dark:text-slate-100">${e.item}</td>
+          <td class="py-3 px-4 text-xs"><span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">${e.category}</span></td>
+          <td class="py-3 px-4 text-right font-bold text-slate-800 dark:text-slate-100">${formatINR(e.amount)}</td>
+          <td class="py-3 px-4 text-slate-700 dark:text-slate-300 font-medium">${e.paidBy}</td>
+          <td class="py-3 px-4 text-xs">
+            <span class="${e.paidFrom === 'Own pocket' ? 'text-purple-600 dark:text-purple-400 font-semibold' : 'text-slate-600 dark:text-slate-400'}">
+              ${e.paidFrom}
+            </span>
+          </td>
+          <td class="py-3 px-4 text-center">${statusCol}</td>
+          <td class="py-3 px-4 text-center">
+            <div class="flex items-center justify-center space-x-1">
+              <button onclick="editExpense('${e.id}')" title="Edit Expense" class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 rounded text-brand-600 dark:text-brand-400">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+              <button onclick="deleteExpense('${e.id}')" title="Delete Expense" class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 rounded text-red-500">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // 4. SETTINGS & CATEGORY CONFIG
+    function renderSettingsPage() {
+      document.getElementById('settingFunctionName').value = settings.functionName;
+      document.getElementById('settingYear').value = settings.year;
+      document.getElementById('settingTargetContrib').value = settings.targetContribution;
+      document.getElementById('settingBuffer').value = settings.bufferPercent;
+
+      const listContainer = document.getElementById('categorySettingsList');
+      listContainer.innerHTML = '';
+
+      categories.forEach(cat => {
+        const div = document.createElement('div');
+        div.className = 'flex items-center justify-between gap-3 bg-slate-50 dark:bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-slate-700';
+        div.innerHTML = `
+          <div class="flex items-center gap-2 flex-1">
+            <i class="fa-solid ${cat.icon || 'fa-tag'} text-brand-600"></i>
+            <span class="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200">${cat.name}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-slate-400">Target (₹):</span>
+            <input type="number" value="${cat.budget}" onchange="updateCatBudget('${cat.id}', this.value)" class="w-24 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded p-1 text-xs text-right font-bold focus:ring-1 focus:ring-brand-500 outline-none">
+          </div>
+        `;
+        listContainer.appendChild(div);
+      });
+    }
+
+    function renderCategoryDropdowns() {
+      const expDropdown = document.getElementById('expenseCategory');
+      const filterDropdown = document.getElementById('expenseCategoryFilter');
+
+      const activeCatValue = expDropdown.value;
+      const activeFilterValue = filterDropdown.value;
+
+      expDropdown.innerHTML = '';
+      categories.forEach(c => {
+        expDropdown.innerHTML += `<option value="${c.name}">${c.name}</option>`;
+      });
+      if (activeCatValue) expDropdown.value = activeCatValue;
+
+      filterDropdown.innerHTML = `<option value="ALL">All Categories</option>`;
+      categories.forEach(c => {
+        filterDropdown.innerHTML += `<option value="${c.name}">${c.name}</option>`;
+      });
+      if (activeFilterValue) filterDropdown.value = activeFilterValue;
+    }
+
+    // CHART VISUALIZATIONS
+    function updateCharts() {
+      // Bar Chart: Budget vs Spent
+      const catLabels = categories.map(c => c.name);
+      const catBudgets = categories.map(c => c.budget);
+      const catSpends = categories.map(c => {
+        return expenses.filter(e => e.category === c.name).reduce((acc, e) => acc + Number(e.amount || 0), 0);
+      });
+
+      const ctx1 = document.getElementById('categoryChart').getContext('2d');
+      if (categoryChartInstance) categoryChartInstance.destroy();
+
+      categoryChartInstance = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: catLabels,
+          datasets: [
+            { label: 'Target Budget (₹)', data: catBudgets, backgroundColor: '#cbd5e1', borderRadius: 4 },
+            { label: 'Actual Spent (₹)', data: catSpends, backgroundColor: '#ea580c', borderRadius: 4 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } },
+          scales: {
+            x: { ticks: { font: { size: 10 } } },
+            y: { ticks: { font: { size: 10 } } }
+          }
+        }
+      });
+
+      // Doughnut Chart: Paid vs Pending
+      const targetPerFlat = Number(settings.targetContribution || 1800);
+      const paidFlats = contributions.filter(c => Number(c.amountPaid) >= targetPerFlat).length;
+      const partialFlats = contributions.filter(c => Number(c.amountPaid) > 0 && Number(c.amountPaid) < targetPerFlat).length;
+      const pendingFlats = contributions.filter(c => Number(c.amountPaid) === 0).length;
+
+      const ctx2 = document.getElementById('collectionsChart').getContext('2d');
+      if (collectionsChartInstance) collectionsChartInstance.destroy();
+
+      collectionsChartInstance = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+          labels: ['Paid', 'Partial', 'Pending'],
+          datasets: [{
+            data: [paidFlats, partialFlats, pendingFlats],
+            backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
+        }
+      });
+    }
+
+    // INITIALIZATION & EVENT LISTENERS
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // Tab switching
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.remove('border-brand-500', 'text-brand-600', 'dark:text-brand-500');
+            b.classList.add('border-transparent', 'text-slate-500', 'dark:text-slate-400');
+          });
+          btn.classList.remove('border-transparent', 'text-slate-500', 'dark:text-slate-400');
+          btn.classList.add('border-brand-500', 'text-brand-600', 'dark:text-brand-500');
+
+          const target = btn.dataset.tab;
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+          document.getElementById(target).classList.remove('hidden');
+        });
+      });
+
+      // Contributor Filters
+      document.querySelectorAll('.contrib-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.contrib-filter-btn').forEach(b => {
+            b.classList.remove('bg-white', 'dark:bg-slate-800', 'text-slate-800', 'dark:text-white', 'shadow-xs');
+            b.classList.add('text-slate-500', 'dark:text-slate-400');
+          });
+          btn.classList.add('bg-white', 'dark:bg-slate-800', 'text-slate-800', 'dark:text-white', 'shadow-xs');
+          btn.classList.remove('text-slate-500', 'dark:text-slate-400');
+          activeContribFilter = btn.dataset.filter;
+          renderContributionsTable();
+        });
+      });
+
+      document.getElementById('contribSearchInput').addEventListener('input', renderContributionsTable);
+      document.getElementById('expenseSearchInput').addEventListener('input', renderExpensesTable);
+      document.getElementById('expenseCategoryFilter').addEventListener('change', renderExpensesTable);
+      document.getElementById('expenseReimburseFilter').addEventListener('change', renderExpensesTable);
+
+      // Modal Triggers
+      document.querySelectorAll('.close-modal-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById('contribModal').classList.add('hidden');
+          document.getElementById('expenseModal').classList.add('hidden');
+        });
+      });
+
+      document.getElementById('openAddContribModalBtn').addEventListener('click', () => {
+        document.getElementById('contribId').value = '';
+        document.getElementById('contribForm').reset();
+        document.getElementById('contribAmount').value = settings.targetContribution;
+        document.getElementById('contribDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('contribModalTitle').textContent = 'Add New Contributor';
+        document.getElementById('contribModal').classList.remove('hidden');
+      });
+
+      document.getElementById('openAddExpenseModalBtn').addEventListener('click', () => {
+        document.getElementById('expenseId').value = '';
+        document.getElementById('expenseForm').reset();
+        document.getElementById('expenseDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('expensePaidFrom').value = 'Fund';
+        document.getElementById('reimburseStatusContainer').classList.add('hidden');
+        document.getElementById('expenseModalTitle').textContent = 'Record New Expense Item';
+        document.getElementById('expenseModal').classList.remove('hidden');
+      });
+
+      document.getElementById('expensePaidFrom').addEventListener('change', (e) => {
+        const container = document.getElementById('reimburseStatusContainer');
+        if (e.target.value === 'Own pocket') {
+          container.classList.remove('hidden');
+        } else {
+          container.classList.add('hidden');
+        }
+      });
+
+      // Submit Forms
+      document.getElementById('contribForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = document.getElementById('contribId').value;
+        const name = document.getElementById('contribName').value.trim();
+        const amountPaid = Number(document.getElementById('contribAmount').value);
+        const date = document.getElementById('contribDate').value;
+        const mode = document.getElementById('contribMode').value;
+
+        if (id) {
+          const index = contributions.findIndex(c => c.id === id);
+          if (index !== -1) {
+            contributions[index] = { id, name, amountPaid, date, mode };
+          }
+        } else {
+          contributions.push({ id: 'c-' + Date.now(), name, amountPaid, date, mode });
+        }
+        document.getElementById('contribModal').classList.add('hidden');
+        saveData();
+      });
+
+      document.getElementById('expenseForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = document.getElementById('expenseId').value;
+        const item = document.getElementById('expenseItem').value.trim();
+        const category = document.getElementById('expenseCategory').value;
+        const amount = Number(document.getElementById('expenseAmount').value);
+        const date = document.getElementById('expenseDate').value;
+        const paidBy = document.getElementById('expensePaidBy').value.trim();
+        const paidFrom = document.getElementById('expensePaidFrom').value;
+        const reimbursed = paidFrom === 'Own pocket' ? document.getElementById('expenseReimbursed').value : 'Yes';
+
+        if (id) {
+          const index = expenses.findIndex(ex => ex.id === id);
+          if (index !== -1) {
+            expenses[index] = { id, item, category, amount, date, paidBy, paidFrom, reimbursed };
+          }
+        } else {
+          expenses.push({ id: 'e-' + Date.now(), item, category, amount, date, paidBy, paidFrom, reimbursed });
+        }
+        document.getElementById('expenseModal').classList.add('hidden');
+        saveData();
+      });
+
+      document.getElementById('settingsForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        settings.functionName = document.getElementById('settingFunctionName').value.trim();
+        settings.year = Number(document.getElementById('settingYear').value);
+        settings.targetContribution = Number(document.getElementById('settingTargetContrib').value);
+        settings.bufferPercent = Number(document.getElementById('settingBuffer').value);
+        saveData();
+      });
+
+      // Reset Defaults Trigger
+      document.getElementById('resetDataBtn').addEventListener('click', () => {
+        if (confirm("Reset to default 15 contributors list with ₹1,800 due and clear all expenses?")) {
+          settings = { ...INITIAL_SETTINGS };
+          categories = [...INITIAL_CATEGORIES];
+          contributions = [...INITIAL_CONTRIBUTIONS];
+          expenses = [...INITIAL_EXPENSES];
+          saveData();
+        }
+      });
+
+      document.getElementById('exportCsvBtn').addEventListener('click', exportToCSV);
+
+      renderApp();
+    });
+
+    // EDIT / DELETE HANDLERS
+    window.editContrib = function(id) {
+      const c = contributions.find(item => item.id === id);
+      if (!c) return;
+      document.getElementById('contribId').value = c.id;
+      document.getElementById('contribName').value = c.name;
+      document.getElementById('contribAmount').value = c.amountPaid || settings.targetContribution;
+      document.getElementById('contribDate').value = c.date || new Date().toISOString().split('T')[0];
+      document.getElementById('contribMode').value = c.mode || 'UPI';
+      document.getElementById('contribModalTitle').textContent = `Record Payment: ${c.name}`;
+      document.getElementById('contribModal').classList.remove('hidden');
+    };
+
+    window.deleteContrib = function(id) {
+      if (confirm("Delete this contributor entry?")) {
+        contributions = contributions.filter(c => c.id !== id);
+        saveData();
+      }
+    };
+
+    window.editExpense = function(id) {
+      const e = expenses.find(item => item.id === id);
+      if (!e) return;
+      document.getElementById('expenseId').value = e.id;
+      document.getElementById('expenseItem').value = e.item;
+      document.getElementById('expenseCategory').value = e.category;
+      document.getElementById('expenseAmount').value = e.amount;
+      document.getElementById('expenseDate').value = e.date;
+      document.getElementById('expensePaidBy').value = e.paidBy;
+      document.getElementById('expensePaidFrom').value = e.paidFrom;
+
+      const container = document.getElementById('reimburseStatusContainer');
+      if (e.paidFrom === 'Own pocket') {
+        container.classList.remove('hidden');
+        document.getElementById('expenseReimbursed').value = e.reimbursed;
+      } else {
+        container.classList.add('hidden');
+      }
+
+      document.getElementById('expenseModalTitle').textContent = 'Edit Expense Item';
+      document.getElementById('expenseModal').classList.remove('hidden');
+    };
+
+    window.deleteExpense = function(id) {
+      if (confirm("Delete this expense item?")) {
+        expenses = expenses.filter(e => e.id !== id);
+        saveData();
+      }
+    };
+
+    window.toggleReimbursement = function(id) {
+      const e = expenses.find(item => item.id === id);
+      if (e) {
+        e.reimbursed = 'Yes';
+        saveData();
+      }
+    };
+
+    window.updateCatBudget = function(id, val) {
+      const cat = categories.find(c => c.id === id);
+      if (cat) {
+        cat.budget = Number(val || 0);
+        saveData();
+      }
+    };
+
+    // EXPORT TO CSV
+    function exportToCSV() {
+      let csvContent = "data:text/csv;charset=utf-8,";
+      
+      csvContent += "CONTRIBUTIONS\nContributor Name,Amount Paid,Target Due,Date,Payment Mode\n";
+      contributions.forEach(c => {
+        csvContent += `"${c.name}",${c.amountPaid},${settings.targetContribution},"${c.date}","${c.mode}"\n`;
+      });
+
+      csvContent += "\nEXPENSES\nDate,Item Description,Category,Amount,Paid By,Paid From,Reimbursed\n";
+      expenses.forEach(e => {
+        csvContent += `"${e.date}","${e.item}","${e.category}",${e.amount},"${e.paidBy}","${e.paidFrom}","${e.reimbursed}"\n`;
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `${settings.functionName}_Accounts_${settings.year}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+</body>
+</html>
